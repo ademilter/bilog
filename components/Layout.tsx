@@ -12,7 +12,7 @@ const Layout: React.FC<Props> = (props) => (
     <Header />
 
     <Container>
-      <div className="py-10">{props.children}</div>
+      <main className="py-10">{props.children}</main>
     </Container>
 
     <Footer />

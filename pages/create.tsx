@@ -25,33 +25,31 @@ const Draft: React.FC = () => {
 
   return (
     <Layout>
-      <main>
-        <form onSubmit={submitData}>
-          <div className="grid grid-cols-1 gap-4">
-            <h1>New Draft</h1>
+      <form onSubmit={submitData}>
+        <div className="grid grid-cols-1 gap-4">
+          <h1>New Draft</h1>
 
-            <input
-              autoFocus
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Title"
-              type="text"
-              value={title}
-            />
+          <input
+            autoFocus
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Title"
+            type="text"
+            value={title}
+          />
 
-            <textarea
-              cols={50}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Content"
-              rows={8}
-              value={content}
-            />
+          <textarea
+            cols={50}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Content"
+            rows={8}
+            value={content}
+          />
 
-            <input disabled={!content || !title} type="submit" value="Create" />
+          <input disabled={!content || !title} type="submit" value="Create" />
 
-            <Button onClick={() => Router.push("/")}>or Cancel</Button>
-          </div>
-        </form>
-      </main>
+          <Button onClick={() => Router.push("/")}>or Cancel</Button>
+        </div>
+      </form>
     </Layout>
   );
 };

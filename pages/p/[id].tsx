@@ -48,25 +48,23 @@ const Post: React.FC<PostProps> = (props) => {
 
   return (
     <Layout>
-      <main className="max-w-4xl m-auto">
-        <h1 className="text-2xl font-bold">
-          {title} {published && <span>{title} (Draft)</span>}
-        </h1>
+      <h1 className="text-2xl font-bold">
+        {title} {published && <span>{title} (Draft)</span>}
+      </h1>
 
-        <p>By {author?.name}</p>
+      <p>By {author?.name}</p>
 
-        <ReactMarkdown children={content} />
+      <ReactMarkdown children={content} />
 
-        <div className="mt-4 space-x-2">
-          {!published && userHasValidSession && postBelongsToUser && (
-            <Button onClick={() => publishPost(id)}>Publish</Button>
-          )}
+      <div className="mt-4 space-x-2">
+        {!published && userHasValidSession && postBelongsToUser && (
+          <Button onClick={() => publishPost(id)}>Publish</Button>
+        )}
 
-          {userHasValidSession && postBelongsToUser && (
-            <Button onClick={() => deletePost(id)}>Delete</Button>
-          )}
-        </div>
-      </main>
+        {userHasValidSession && postBelongsToUser && (
+          <Button onClick={() => deletePost(id)}>Delete</Button>
+        )}
+      </div>
     </Layout>
   );
 };

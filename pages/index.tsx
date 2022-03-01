@@ -23,15 +23,13 @@ type Props = {
 const Index: React.FC<Props> = ({ feed }) => {
   return (
     <Layout>
-      <main>
-        <h1 className="text-2xl font-bold">Public Feed</h1>
+      <h1 className="text-2xl font-bold">Public Feed</h1>
 
-        <div className="mt-6 space-y-4">
-          {feed.map((post) => (
-            <Post key={post.id} {...post} />
-          ))}
-        </div>
-      </main>
+      <div className="mt-6 space-y-4">
+        {feed.map((post) => (
+          <Post key={post.id} {...post} />
+        ))}
+      </div>
     </Layout>
   );
 };

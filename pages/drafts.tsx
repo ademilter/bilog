@@ -38,26 +38,21 @@ const Drafts: React.FC<Props> = (props) => {
   if (!session) {
     return (
       <Layout>
-        <main className="max-w-4xl m-auto">
-          <h1>My Drafts</h1>
-
-          <div>You need to be authenticated to view this page.</div>
-        </main>
+        <h1>My Drafts</h1>
+        <div>You need to be authenticated to view this page.</div>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <main>
-        <h1 className="text-2xl font-bold">My Drafts</h1>
+      <h1 className="text-2xl font-bold">My Drafts</h1>
 
-        <div className="mt-6 space-y-4">
-          {props.drafts.map((post) => (
-            <Post key={post.id} {...post} />
-          ))}
-        </div>
-      </main>
+      <div className="mt-6 space-y-4">
+        {props.drafts.map((post) => (
+          <Post key={post.id} {...post} />
+        ))}
+      </div>
     </Layout>
   );
 };
