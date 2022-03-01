@@ -7,6 +7,7 @@ import prisma from "lib/prisma";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
+
   if (!session) {
     res.statusCode = 403;
     return { props: { drafts: [] } };
@@ -32,7 +33,7 @@ type Props = {
   drafts: PostProps[];
 };
 
-const Drafts: React.FC<Props> = (props) => {
+const Drafts: React.FC<Props> = ({ drafts }) => {
   const { data: session } = useSession();
 
   if (!session) {
@@ -49,7 +50,7 @@ const Drafts: React.FC<Props> = (props) => {
       <h1 className="text-2xl font-bold">My Drafts</h1>
 
       <div className="mt-6 space-y-4">
-        {props.drafts.map((post) => (
+        {drafts.map((post) => (
           <Post key={post.id} {...post} />
         ))}
       </div>
