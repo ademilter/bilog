@@ -6,6 +6,7 @@ import Layout from "../../components/Layout";
 import { PostProps } from "../../components/Post";
 import { useSession } from "next-auth/react";
 import prisma from "../../lib/prisma";
+import Button from "../../components/Button";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await prisma.post.findUnique({
@@ -38,51 +39,34 @@ async function deletePost(id: number): Promise<void> {
 }
 
 const Post: React.FC<PostProps> = (props) => {
-  const { data: session, status } = useSession();
-  if (status === "loading") {
-    return <div>Authenticating ...</div>;
-  }
+  const { data: session } = useSession();
+
+  const { id, title, content, published, author } = props;
+
   const userHasValidSession = Boolean(session);
-  const postBelongsToUser = session?.user?.email === props.author?.email;
-  let title = props.title;
-  if (!props.published) {
-    title = `${title} (Draft)`;
-  }
+  const postBelongsToUser = session?.user?.email === author?.email;
 
   return (
     <Layout>
-      <div>
-        <h2>{title}</h2>
-        <p>By {props?.author?.name || "Unknown author"}</p>
-        <ReactMarkdown children={props.content} />
-        {!props.published && userHasValidSession && postBelongsToUser && (
-          <button onClick={() => publishPost(props.id)}>Publish</button>
-        )}
-        {userHasValidSession && postBelongsToUser && (
-          <button onClick={() => deletePost(props.id)}>Delete</button>
-        )}
-      </div>
-      <style jsx>{`
-        .page {
-          background: var(--geist-background);
-          padding: 2rem;
-        }
+      <main className="max-w-4xl m-auto">
+        <h1 className="text-2xl font-bold">
+          {title} {published && <span>{title} (Draft)</span>}
+        </h1>
 
-        .actions {
-          margin-top: 2rem;
-        }
+        <p>By {author?.name}</p>
 
-        button {
-          background: #ececec;
-          border: 0;
-          border-radius: 0.125rem;
-          padding: 1rem 2rem;
-        }
+        <ReactMarkdown children={content} />
 
-        button + button {
-          margin-left: 1rem;
-        }
-      `}</style>
+        <div className="mt-4 space-x-2">
+          {!published && userHasValidSession && postBelongsToUser && (
+            <Button onClick={() => publishPost(id)}>Publish</Button>
+          )}
+
+          {userHasValidSession && postBelongsToUser && (
+            <Button onClick={() => deletePost(id)}>Delete</Button>
+          )}
+        </div>
+      </main>
     </Layout>
   );
 };

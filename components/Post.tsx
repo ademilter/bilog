@@ -1,6 +1,6 @@
 import React from "react";
-import Router from "next/router";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 
 export type PostProps = {
   id: number;
@@ -13,14 +13,22 @@ export type PostProps = {
   published: boolean;
 };
 
-const Post: React.FC<{ post: PostProps }> = ({ post }) => {
+const Post: React.FC<PostProps> = (post) => {
   const authorName = post.author ? post.author.name : "Unknown author";
   return (
-    <div onClick={() => Router.push("/p/[id]", `/p/${post.id}`)}>
-      <h2>{post.title}</h2>
-      <small>By {authorName}</small>
-      <ReactMarkdown children={post.content} />
-    </div>
+    <Link href={`/p/${post.id}`}>
+      <a className="block border rounded p-4">
+        <header>
+          <h3 className="font-bold">{post.title}</h3>
+        </header>
+
+        <ReactMarkdown children={post.content} />
+
+        <footer>
+          <small>By {authorName}</small>
+        </footer>
+      </a>
+    </Link>
   );
 };
 

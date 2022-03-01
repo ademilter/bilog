@@ -9,7 +9,9 @@ type Props = {
 const Layout: React.FC<Props> = (props) => (
   <>
     <Header />
-    {props.children}
+
+    <div className="py-10">{props.children}</div>
+
     <Footer />
   </>
 );

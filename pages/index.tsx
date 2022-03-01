@@ -20,21 +20,20 @@ type Props = {
   feed: PostProps[];
 };
 
-const Blog: React.FC<Props> = (props) => {
+const Index: React.FC<Props> = ({ feed }) => {
   return (
     <Layout>
-      <div className="page">
-        <h1>Public Feed</h1>
-        <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
+      <main className="max-w-4xl m-auto">
+        <h1 className="text-2xl font-bold">Public Feed</h1>
+
+        <div className="mt-6 space-y-4">
+          {feed.map((post) => (
+            <Post key={post.id} {...post} />
           ))}
-        </main>
-      </div>
+        </div>
+      </main>
     </Layout>
   );
 };
 
-export default Blog;
+export default Index;
