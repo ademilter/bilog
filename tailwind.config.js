@@ -4,7 +4,16 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      typography: ({ theme }) => ({
+        gray: {
+          css: {
+            // fontSize: theme("fontSize.lg"),
+            lineHeight: theme("lineHeight.normal"),
+          },
+        },
+      }),
+    },
   },
   plugins: [
     require("@tailwindcss/typography"),

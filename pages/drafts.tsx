@@ -2,9 +2,11 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Layout from "components/Layout";
-import Post, { PostProps } from "components/Post";
+import { PostProps } from "components/Post";
 import prisma from "lib/prisma";
 import GlobalStoreContext from "store/global";
+import PostList from "components/PostList";
+import { deepCopy } from "lib/helper";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -14,27 +16,44 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: { drafts: [] } };
   }
 
-  const drafts = await prisma.post.findMany({
+  const data = await prisma.post.findMany({
     where: {
       author: { email: session.user.email },
       published: false,
     },
-    include: {
+    // skip: 0,
+    // take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      published: true,
+      createdAt: true,
       author: {
-        select: { name: true },
+        select: {
+          email: true,
+          name: true,
+          image: true,
+        },
       },
     },
   });
+
   return {
-    props: { drafts },
+    props: {
+      data: deepCopy(data),
+    },
   };
 };
 
 type Props = {
-  drafts: PostProps[];
+  data: PostProps[];
 };
 
-const Drafts: React.FC<Props> = ({ drafts }) => {
+const Drafts: React.FC<Props> = ({ data }) => {
   const { session } = React.useContext(GlobalStoreContext);
 
   if (!session) {
@@ -48,12 +67,8 @@ const Drafts: React.FC<Props> = ({ drafts }) => {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">My Drafts</h1>
-
-      <div className="mt-6 space-y-4">
-        {drafts.map((post) => (
-          <Post key={post.id} {...post} />
-        ))}
+      <div>
+        <PostList data={data} />
       </div>
     </Layout>
   );

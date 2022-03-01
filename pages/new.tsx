@@ -42,11 +42,12 @@ const Draft: React.FC = () => {
           </Button>
         </div>
 
-        <div className="mt-10 prose prose-zinc max-w-none">
-          <div className="text-4xl leading-normal font-bold">
+        <div className="mt-10">
+          <div className="text-4xl leading-none font-bold">
             {title ? title : "Title..."}
           </div>
           <div
+            className="mt-4 prose prose-gray max-w-none"
             dangerouslySetInnerHTML={{
               __html: markdownToHtml(content || "Tell your story..."),
             }}
@@ -101,7 +102,7 @@ const Draft: React.FC = () => {
               name="title"
               placeholder="Title..."
               value={title}
-              className="text-4xl leading-normal bg-transparent font-bold w-full border-0 outline-0 resize-none placeholder-gray-400"
+              className="text-4xl leading-none bg-transparent font-bold w-full border-0 outline-0 resize-none placeholder-gray-400"
               onChange={(e) => setTitle(e.target.value)}
             />
             <Editor

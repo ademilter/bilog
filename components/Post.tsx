@@ -1,35 +1,56 @@
 import React from "react";
 import Link from "next/link";
 import { markdownToHtml } from "lib/editor";
+import { DateTime } from "luxon";
 
 export type PostProps = {
   id: number;
   title: string;
-  author: {
-    name: string;
-    email: string;
-  } | null;
   content: string;
   published: boolean;
+  createdAt: string;
+  author: {
+    email: string;
+    name: string;
+    image: string;
+  };
 };
 
-const Post: React.FC<PostProps> = (post) => {
+const Post: React.FC<PostProps> = ({
+  id,
+  title,
+  author,
+  content,
+  createdAt,
+}) => {
   return (
-    <Link href={`/p/${post.id}`}>
-      <a className="block border rounded p-4">
-        <header>
-          <h3 className="font-bold">{post.title}</h3>
-        </header>
+    <div>
+      <Link href={`/p/${id}`}>
+        <a className="block py-6">
+          <header>
+            <h3 className="text-3xl font-bold leading-none">{title}</h3>
+          </header>
 
-        <div
-          dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
-        />
+          <div
+            className="mt-2 line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
+          />
 
-        <footer>
-          <small>By {post.author.name}</small>
-        </footer>
-      </a>
-    </Link>
+          <footer className="mt-4 flex items-center space-x-2 text-sm text-gray-500">
+            {author.image && (
+              <img
+                className="block w-6 h-6 rounded-full"
+                src={author.image}
+                alt={author.name}
+              />
+            )}
+            <span>{author.name}</span>
+            <span>·</span>
+            <span>{DateTime.fromISO(createdAt.toString()).toRelative()}</span>
+          </footer>
+        </a>
+      </Link>
+    </div>
   );
 };
 

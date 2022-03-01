@@ -15,7 +15,7 @@ const Layout: React.FC<Props> = (props) => (
       <main className="py-10">{props.children}</main>
     </Container>
 
-    <Footer />
+    {/*<Footer />*/}
   </>
 );
 

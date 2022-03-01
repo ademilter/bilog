@@ -9,6 +9,7 @@ import GlobalStoreContext from "store/global";
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
 import Button from "components/Button";
+import { deepCopy } from "../../lib/helper";
 
 // Examples
 // https://lux.camera/halide-2-7-its-a-keeper/
@@ -18,14 +19,24 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     where: {
       id: Number(params?.id) || -1,
     },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      published: true,
+      createdAt: true,
       author: {
-        select: { name: true, email: true },
+        select: {
+          email: true,
+          name: true,
+          image: true,
+        },
       },
     },
   });
+
   return {
-    props: post,
+    props: deepCopy(post),
   };
 };
 
@@ -75,8 +86,10 @@ const Post: React.FC<PostProps> = (props) => {
 
       <div className="mt-10 prose prose-zinc max-w-none">
         {!published && <div>(Draft)</div>}
+
         <p>{author.name}</p>
-        <div className="text-4xl font-bold">{title}</div>
+
+        <div className="text-5xl leading-none font-bold">{title}</div>
 
         <div dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />
       </div>

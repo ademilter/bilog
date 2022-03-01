@@ -1,36 +1,55 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import Layout from "components/Layout";
-import Post, { PostProps } from "components/Post";
+
 import prisma from "lib/prisma";
+import { deepCopy } from "lib/helper";
+
+import { PostProps } from "components/Post";
+import Layout from "components/Layout";
+import PostList from "components/PostList";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const feed = await prisma.post.findMany({
+  const data = await prisma.post.findMany({
     where: {
       published: true,
     },
-    include: {
+    // skip: 0,
+    // take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      published: true,
+      createdAt: true,
       author: {
-        select: { name: true },
+        select: {
+          email: true,
+          name: true,
+          image: true,
+        },
       },
     },
   });
-  return { props: { feed } };
+
+  return {
+    props: {
+      data: deepCopy(data),
+    },
+  };
 };
 
 type Props = {
-  feed: PostProps[];
+  data: PostProps[];
 };
 
-const Index: React.FC<Props> = ({ feed }) => {
+const Index: React.FC<Props> = ({ data }) => {
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">Public Feed</h1>
-
-      <div className="mt-6 space-y-4">
-        {feed.map((post) => (
-          <Post key={post.id} {...post} />
-        ))}
+      <div>
+        <PostList data={data} />
       </div>
     </Layout>
   );
