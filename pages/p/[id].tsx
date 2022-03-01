@@ -4,9 +4,9 @@ import ReactMarkdown from "react-markdown";
 import Router from "next/router";
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
-import { useSession } from "next-auth/react";
 import prisma from "lib/prisma";
 import Button from "components/Button";
+import GlobalStoreContext from "store/global";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await prisma.post.findUnique({
@@ -39,7 +39,7 @@ async function deletePost(id: number): Promise<void> {
 }
 
 const Post: React.FC<PostProps> = (props) => {
-  const { data: session } = useSession();
+  const { session } = React.useContext(GlobalStoreContext);
 
   const { id, title, content, published, author } = props;
 

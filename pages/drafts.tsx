@@ -1,9 +1,10 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import { useSession, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Layout from "components/Layout";
 import Post, { PostProps } from "components/Post";
 import prisma from "lib/prisma";
+import GlobalStoreContext from "store/global";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -34,7 +35,7 @@ type Props = {
 };
 
 const Drafts: React.FC<Props> = ({ drafts }) => {
-  const { data: session } = useSession();
+  const { session } = React.useContext(GlobalStoreContext);
 
   if (!session) {
     return (

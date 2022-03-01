@@ -14,7 +14,6 @@ export type PostProps = {
 };
 
 const Post: React.FC<PostProps> = (post) => {
-  const authorName = post.author ? post.author.name : "Unknown author";
   return (
     <Link href={`/p/${post.id}`}>
       <a className="block border rounded p-4">
@@ -25,7 +24,7 @@ const Post: React.FC<PostProps> = (post) => {
         <ReactMarkdown children={post.content} />
 
         <footer>
-          <small>By {authorName}</small>
+          <small>By {post.author.name}</small>
         </footer>
       </a>
     </Link>

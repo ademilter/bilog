@@ -2,17 +2,16 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { signIn, signOut, useSession } from "next-auth/react";
-import type { SessionContextValue } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Container from "./Container";
+import GlobalStoreContext from "store/global";
 
 const Header: React.FC = () => {
   const router = useRouter();
+  const { session } = React.useContext(GlobalStoreContext);
 
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
-
-  const { data: session }: SessionContextValue = useSession();
 
   if (!session) {
     return (

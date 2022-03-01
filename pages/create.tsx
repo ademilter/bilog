@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Layout from "components/Layout";
 import Router from "next/router";
 import Button from "components/Button";
-import Container from "components/Container";
 
 const Draft: React.FC = () => {
   const [title, setTitle] = useState("");
