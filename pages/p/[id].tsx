@@ -74,7 +74,7 @@ const Post: React.FC<PostProps> = (props) => {
       </div>
 
       <div className="mt-10 prose prose-zinc max-w-none">
-        {published && <div>(Draft)</div>}
+        {!published && <div>(Draft)</div>}
         <p>{author.name}</p>
         <div className="text-4xl font-bold">{title}</div>
 
