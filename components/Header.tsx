@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                 className="z-50 absolute left-0 top-full p-2 bg-white shadow whitespace-nowrap
               flex flex-col gap-2"
               >
-                <Link href="/create">
+                <Link href="/new">
                   <a>New post</a>
                 </Link>
                 <button onClick={() => signOut()}>Log out</button>

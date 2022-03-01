@@ -17,7 +17,7 @@ const Button: React.FC<Props> = ({
     <button
       type="button"
       className={cx(
-        "bg-gray-300 p-2 rounded-md select-none h-10",
+        "bg-gray-200 p-2 rounded-md select-none h-10",
         size === "small" ? "text-base py-1 h-8" : "",
         className
       )}

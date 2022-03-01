@@ -1,12 +1,17 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import ReactMarkdown from "react-markdown";
 import Router from "next/router";
+
+import { markdownToHtml } from "lib/editor";
+import prisma from "lib/prisma";
+import GlobalStoreContext from "store/global";
+
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
-import prisma from "lib/prisma";
 import Button from "components/Button";
-import GlobalStoreContext from "store/global";
+
+// Examples
+// https://lux.camera/halide-2-7-its-a-keeper/
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await prisma.post.findUnique({
@@ -24,20 +29,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   };
 };
 
-async function publishPost(id: number): Promise<void> {
-  await fetch(`/api/publish/${id}`, {
-    method: "PUT",
-  });
-  await Router.push("/");
-}
-
-async function deletePost(id: number): Promise<void> {
-  await fetch(`/api/post/${id}`, {
-    method: "DELETE",
-  });
-  Router.push("/");
-}
-
 const Post: React.FC<PostProps> = (props) => {
   const { session } = React.useContext(GlobalStoreContext);
 
@@ -46,16 +37,22 @@ const Post: React.FC<PostProps> = (props) => {
   const userHasValidSession = Boolean(session);
   const postBelongsToUser = session?.user?.email === author?.email;
 
+  async function publishPost(id: number) {
+    await fetch(`/api/publish/${id}`, {
+      method: "PUT",
+    });
+    return Router.push("/");
+  }
+
+  async function deletePost(id: number) {
+    await fetch(`/api/post/${id}`, {
+      method: "DELETE",
+    });
+    return Router.push("/");
+  }
+
   return (
     <Layout>
-      <h1 className="text-2xl font-bold">
-        {title} {published && <span>{title} (Draft)</span>}
-      </h1>
-
-      <p>By {author?.name}</p>
-
-      <ReactMarkdown children={content} />
-
       <div className="mt-4 space-x-2">
         {!published && userHasValidSession && postBelongsToUser && (
           <Button onClick={() => publishPost(id)}>Publish</Button>
@@ -64,6 +61,14 @@ const Post: React.FC<PostProps> = (props) => {
         {userHasValidSession && postBelongsToUser && (
           <Button onClick={() => deletePost(id)}>Delete</Button>
         )}
+      </div>
+
+      <div className="mt-10 prose prose-zinc max-w-none">
+        {published && <div>(Draft)</div>}
+        <p>{author.name}</p>
+        <div className="text-4xl font-bold">{title}</div>
+
+        <div dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />
       </div>
     </Layout>
   );

@@ -1,6 +1,6 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { markdownToHtml } from "lib/editor";
 
 export type PostProps = {
   id: number;
@@ -21,7 +21,9 @@ const Post: React.FC<PostProps> = (post) => {
           <h3 className="font-bold">{post.title}</h3>
         </header>
 
-        <ReactMarkdown children={post.content} />
+        <div
+          dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
+        />
 
         <footer>
           <small>By {post.author.name}</small>
