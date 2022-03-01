@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import cx from "classnames";
 import { signIn, signOut, useSession } from "next-auth/react";
 import type { SessionContextValue } from "next-auth/react";
+import Container from "./Container";
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -15,21 +16,21 @@ const Header: React.FC = () => {
 
   if (!session) {
     return (
-      <header className="bg-gray-100">
-        <div className="max-w-4xl m-auto py-4">
+      <header className="bg-gray-100 py-4">
+        <Container>
           <div className="flex items-center justify-between">
             <nav className="flex items-center space-x-2">
               <button onClick={() => signIn()}>Login</button>
             </nav>
           </div>
-        </div>
+        </Container>
       </header>
     );
   }
 
   return (
-    <header className="bg-gray-100">
-      <div className="max-w-4xl m-auto py-4">
+    <header className="bg-gray-100 py-4">
+      <Container>
         <div className="flex items-center justify-between">
           <nav className="flex items-center space-x-2">
             <Link href="/">
@@ -68,7 +69,7 @@ const Header: React.FC = () => {
             </details>
           </div>
         </div>
-      </div>
+      </Container>
     </header>
   );
 };

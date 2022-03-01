@@ -1,9 +1,9 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import { useSession, getSession } from "next-auth/react";
-import Layout from "../components/Layout";
-import Post, { PostProps } from "../components/Post";
-import prisma from "../lib/prisma";
+import Layout from "components/Layout";
+import Post, { PostProps } from "components/Post";
+import prisma from "lib/prisma";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -49,7 +49,7 @@ const Drafts: React.FC<Props> = (props) => {
 
   return (
     <Layout>
-      <main className="max-w-4xl m-auto">
+      <main>
         <h1 className="text-2xl font-bold">My Drafts</h1>
 
         <div className="mt-6 space-y-4">

@@ -2,11 +2,11 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import ReactMarkdown from "react-markdown";
 import Router from "next/router";
-import Layout from "../../components/Layout";
-import { PostProps } from "../../components/Post";
+import Layout from "components/Layout";
+import { PostProps } from "components/Post";
 import { useSession } from "next-auth/react";
-import prisma from "../../lib/prisma";
-import Button from "../../components/Button";
+import prisma from "lib/prisma";
+import Button from "components/Button";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await prisma.post.findUnique({

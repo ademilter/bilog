@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Layout from "../components/Layout";
+import Layout from "components/Layout";
 import Router from "next/router";
-import Button from "../components/Button";
+import Button from "components/Button";
+import Container from "components/Container";
 
 const Draft: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -24,7 +25,7 @@ const Draft: React.FC = () => {
 
   return (
     <Layout>
-      <main className="max-w-4xl m-auto">
+      <main>
         <form onSubmit={submitData}>
           <div className="grid grid-cols-1 gap-4">
             <h1>New Draft</h1>

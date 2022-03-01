@@ -7,7 +7,12 @@ type Props = React.ComponentPropsWithoutRef<"button"> & {
   size?: "normal" | "small";
 };
 
-const Button = ({ children, className, size = "normal", ...props }: Props) => {
+const Button: React.FC<Props> = ({
+  children,
+  className,
+  size = "normal",
+  ...props
+}) => {
   return (
     <button
       type="button"
