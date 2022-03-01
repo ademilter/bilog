@@ -59,10 +59,20 @@ const Draft: React.FC = () => {
   return (
     <Layout>
       <div className="flex items-center justify-between">
-        <Button size="small" onClick={() => setEditorState("1")}>
-          Preview
-        </Button>
-
+        <div className="flex items-center gap-2">
+          <Button size="small" onClick={() => setEditorState("1")}>
+            Preview
+          </Button>
+          <Toolbar
+            onBold={() => refEditor.current?.trigger("bold")}
+            onItalic={() => refEditor.current?.trigger("italic")}
+            onBlockQuotes={() => refEditor.current?.trigger("block-quotes")}
+            onCodeInline={() => refEditor.current?.trigger("code-inline")}
+            onLink={() => refEditor.current?.trigger("link")}
+            onUnorderedList={() => refEditor.current?.trigger("unordered-list")}
+            onOrderedList={() => refEditor.current?.trigger("ordered-list")}
+          />
+        </div>
         <div className="flex items-center gap-2">
           <Button
             size="small"
@@ -76,24 +86,13 @@ const Draft: React.FC = () => {
           </Button>
           <Button
             size="small"
-            className="bg-blue-600 text-white"
+            className="!bg-blue-600 text-white"
             onClick={() => submitData()}
           >
             Save
           </Button>
         </div>
       </div>
-
-      <Toolbar
-        className="mt-10"
-        onBold={() => refEditor.current?.trigger("bold")}
-        onItalic={() => refEditor.current?.trigger("italic")}
-        onBlockQuotes={() => refEditor.current?.trigger("block-quotes")}
-        onCodeInline={() => refEditor.current?.trigger("code-inline")}
-        onLink={() => refEditor.current?.trigger("link")}
-        onUnorderedList={() => refEditor.current?.trigger("unordered-list")}
-        onOrderedList={() => refEditor.current?.trigger("ordered-list")}
-      />
 
       <div className="mt-10">
         <div>

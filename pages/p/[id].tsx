@@ -55,11 +55,21 @@ const Post: React.FC<PostProps> = (props) => {
     <Layout>
       <div className="mt-4 space-x-2">
         {!published && userHasValidSession && postBelongsToUser && (
-          <Button onClick={() => publishPost(id)}>Publish</Button>
+          <Button
+            className="!bg-blue-100 text-blue-700"
+            onClick={() => publishPost(id)}
+          >
+            Publish
+          </Button>
         )}
 
         {userHasValidSession && postBelongsToUser && (
-          <Button onClick={() => deletePost(id)}>Delete</Button>
+          <Button
+            className="!bg-red-100 text-red-700"
+            onClick={() => deletePost(id)}
+          >
+            Delete
+          </Button>
         )}
       </div>
 
