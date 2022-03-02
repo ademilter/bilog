@@ -69,12 +69,6 @@ const Post: React.FC<PostProps> = (props) => {
           <>
             <Button
               className="!bg-blue-100 text-blue-700"
-              onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}
-            >
-              Edit
-            </Button>
-            <Button
-              className="!bg-blue-100 text-blue-700"
               onClick={() => publishPost(id)}
             >
               Publish
@@ -83,12 +77,20 @@ const Post: React.FC<PostProps> = (props) => {
         )}
 
         {userHasValidSession && postBelongsToUser && (
-          <Button
-            className="!bg-red-100 text-red-700"
-            onClick={() => deletePost(id)}
-          >
-            Delete
-          </Button>
+          <>
+            <Button
+              className="!bg-blue-100 text-blue-700"
+              onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}
+            >
+              Edit
+            </Button>
+            <Button
+              className="!bg-red-100 text-red-700"
+              onClick={() => deletePost(id)}
+            >
+              Delete
+            </Button>
+          </>
         )}
       </div>
 
