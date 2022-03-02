@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[] @relation(references: [id])
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
@@ -14,6 +20,7 @@ model Post {
   published Boolean  @default(false)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+  tags      Tag[]    @relation(references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
