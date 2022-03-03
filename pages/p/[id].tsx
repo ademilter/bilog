@@ -65,25 +65,31 @@ const Post: React.FC<PostProps> = (props) => {
   return (
     <Layout>
       <div className="mt-4 space-x-2">
-        {!published && userHasValidSession && postBelongsToUser && (
-          <>
-            <Button
-              className="!bg-blue-100 text-blue-700"
-              onClick={() => publishPost(id)}
-            >
-              Publish
-            </Button>
-          </>
-        )}
-
         {userHasValidSession && postBelongsToUser && (
           <>
-            <Button
-              className="!bg-blue-100 text-blue-700"
-              onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}
-            >
-              Edit
-            </Button>
+            {published ? (
+              <Button
+                className="!bg-blue-100 text-blue-700"
+                onClick={() => Router.push("/edit/[id]", `/edit/${id}`)}
+              >
+                Edit
+              </Button>
+            ) : (
+              <>
+                <Button
+                  className="!bg-blue-100 text-blue-700"
+                  onClick={() => publishPost(id)}
+                >
+                  Publish
+                </Button>
+                <Button
+                  className="!bg-blue-100 text-blue-700"
+                  onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}
+                >
+                  Edit
+                </Button>
+              </>
+            )}
             <Button
               className="!bg-red-100 text-red-700"
               onClick={() => deletePost(id)}

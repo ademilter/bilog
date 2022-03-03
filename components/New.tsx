@@ -68,18 +68,32 @@ const NewPost: React.FC = () => {
     }
   };
 
-  const updatePost = async ({ published }) => {
+  const updatePost = async () => {
     try {
       const response = await fetch(`/api/post/${postId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, published }),
+        body: JSON.stringify({ title, content }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const publishPost = async () => {
+    try {
+      const response = await fetch(`/api/publish/${postId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
 
-      if (!published) return;
       return router.push(`/p/${postId}`);
     } catch (error) {
       console.error(error);
@@ -87,10 +101,13 @@ const NewPost: React.FC = () => {
   };
 
   React.useEffect(() => {
+    // if post is published, stop autosave
+    if (published) return;
+
     if (!postId) {
       createPost();
     } else {
-      updatePost({ published });
+      updatePost();
     }
   }, [debouncedTitle, debouncedContent]);
 
@@ -107,7 +124,7 @@ const NewPost: React.FC = () => {
             <Button
               size="small"
               className="!bg-blue-600 text-white"
-              onClick={() => updatePost({ published: true })}
+              onClick={publishPost}
             >
               Publish
             </Button>
