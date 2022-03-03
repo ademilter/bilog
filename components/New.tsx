@@ -30,8 +30,8 @@ const NewPost: React.FC = () => {
   const [content, setContent] = React.useState("");
   const [published, setPublished] = React.useState(false);
 
-  const debouncedTitle = useDebounce(title, 5000);
-  const debouncedContent = useDebounce(content, 5000);
+  const debouncedTitle = useDebounce(title, 1000);
+  const debouncedContent = useDebounce(content, 1000);
 
   const getPost = async () => {
     try {
@@ -78,6 +78,8 @@ const NewPost: React.FC = () => {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
+
+      return router.push(`/p/${postId}`);
     } catch (error) {
       console.error(error);
     }
@@ -101,14 +103,8 @@ const NewPost: React.FC = () => {
   };
 
   React.useEffect(() => {
-    // if post is published, stop autosave
-    if (published) return;
-
-    if (!postId) {
-      createPost();
-    } else {
-      updatePost();
-    }
+    if (published || postId) return;
+    createPost();
   }, [debouncedTitle, debouncedContent]);
 
   React.useEffect(() => {
@@ -121,13 +117,24 @@ const NewPost: React.FC = () => {
       header={
         <header className="fixed inset-0 bottom-auto bg-gray-100 py-4">
           <Container>
-            <Button
-              size="small"
-              className="!bg-blue-600 text-white"
-              onClick={publishPost}
-            >
-              Publish
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Button
+                size="small"
+                className="!bg-blue-600 text-white"
+                onClick={publishPost}
+              >
+                Publish
+              </Button>
+              {!published && (
+                <Button
+                  size="small"
+                  className="!bg-blue-100"
+                  onClick={updatePost}
+                >
+                  Save as Draft
+                </Button>
+              )}
+            </div>
           </Container>
         </header>
       }

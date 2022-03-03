@@ -13,5 +13,6 @@ export default function useDebounce(value, delay = 300) {
       clearTimeout(handler);
     };
   }, [value, delay]);
+
   return debouncedValue;
 }
