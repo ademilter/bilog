@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { TextareaMarkdownRef } from "textarea-markdown-editor";
 import TextareaAutosize from "react-textarea-autosize";
+import useFetch from "use-http";
 
 import { markdownToHtml } from "lib/editor";
 import useDebounce from "hooks/useDebounce";
@@ -18,84 +19,71 @@ export enum EditorState {
 }
 
 const NewPost: React.FC = () => {
+  const router = useRouter();
+  const postId = router.query.id || null;
+
   const refEditor = React.useRef<TextareaMarkdownRef>(null);
+
   const [editorState, setEditorState] = React.useState<EditorState>(
     EditorState.Edit
   );
 
-  const router = useRouter();
-  const postId = router.query.id || null;
+  const [post, setPost] = React.useState({
+    title: "",
+    content: "",
+    published: false,
+  });
 
-  const [title, setTitle] = React.useState("");
-  const [content, setContent] = React.useState("");
-  const [published, setPublished] = React.useState(false);
+  const debouncedPost = useDebounce(post, 1000);
 
-  const debouncedTitle = useDebounce(title, 1000);
-  const debouncedContent = useDebounce(content, 1000);
+  const {
+    get: getPost,
+    post: createPost,
+    put: updatePost,
+    response: responsePost,
+    loading: loadingPost,
+  } = useFetch("/post");
 
-  const getPost = async () => {
+  const {
+    put: publishPost,
+    response: responsePublish,
+    loading: loadingPublish,
+  } = useFetch("/publish");
+
+  const onGet = async () => {
     try {
-      const response = await fetch(`/api/post/${postId}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-
-      setContent(data.content);
-      setTitle(data.title);
-      setPublished(data.published);
+      const data = await getPost(postId as string);
+      if (!responsePost.ok) throw new Error(responsePost.data.message);
+      setPost(data);
     } catch (error) {
       return router.push("/drafts");
     }
   };
 
-  const createPost = async () => {
+  const onCreate = async () => {
     try {
-      const response = await fetch(`/api/post`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-
+      const data = await createPost(post);
+      if (!responsePost.ok) throw new Error(responsePost.data.message);
       await router.push(`draft/${data.id}`);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const updatePost = async () => {
+  const onUpdate = async () => {
     try {
-      const response = await fetch(`/api/post/${postId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-
+      await updatePost(postId, post);
+      if (!responsePost.ok) throw new Error(responsePost.data.message);
       return router.push(`/p/${postId}`);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const publishPost = async () => {
+  const onPublish = async () => {
     try {
-      const response = await fetch(`/api/publish/${postId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-
+      await publishPost(postId, post);
+      if (!responsePublish.ok) throw new Error(responsePublish.data.message);
       return router.push(`/p/${postId}`);
     } catch (error) {
       console.error(error);
@@ -103,13 +91,13 @@ const NewPost: React.FC = () => {
   };
 
   React.useEffect(() => {
-    if (published || postId) return;
-    createPost();
-  }, [debouncedTitle, debouncedContent]);
+    if (post.published || postId) return;
+    onCreate();
+  }, [debouncedPost]);
 
   React.useEffect(() => {
     if (!postId) return;
-    getPost();
+    onGet();
   }, [postId]);
 
   return (
@@ -120,16 +108,18 @@ const NewPost: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Button
                 size="small"
-                className="!bg-blue-600 text-white"
-                onClick={publishPost}
+                disabled={loadingPublish}
+                className="bg-blue-600 text-white"
+                onClick={onPublish}
               >
                 Publish
               </Button>
-              {!published && (
+              {!post.published && (
                 <Button
                   size="small"
-                  className="!bg-blue-100"
-                  onClick={updatePost}
+                  disabled={loadingPost}
+                  className="bg-blue-100"
+                  onClick={onUpdate}
                 >
                   Save as Draft
                 </Button>
@@ -145,9 +135,14 @@ const NewPost: React.FC = () => {
             <TextareaAutosize
               name="title"
               placeholder="Title..."
-              value={title}
+              value={post.title}
               className="text-4xl leading-none bg-transparent font-bold w-full border-0 outline-0 resize-none placeholder-gray-400"
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) =>
+                setPost((prevState) => ({
+                  ...prevState,
+                  title: e.target.value,
+                }))
+              }
             />
 
             <div className="my-4 flex items-center gap-1">
@@ -181,17 +176,24 @@ const NewPost: React.FC = () => {
                 <div
                   className="prose prose-gray max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: markdownToHtml(content || "Tell your story..."),
+                    __html: markdownToHtml(
+                      post.content || "Tell your story..."
+                    ),
                   }}
                 />
               ) : (
                 <Editor
                   ref={refEditor}
                   name="content"
-                  value={content}
+                  value={post.content}
                   placeholder="Tell your story..."
                   className="text-[inherit] bg-transparent w-full border-0 outline-0 resize-none placeholder-gray-400"
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={(e) =>
+                    setPost((prevState) => ({
+                      ...prevState,
+                      content: e.target.value,
+                    }))
+                  }
                 />
               )}
             </div>

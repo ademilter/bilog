@@ -25,7 +25,8 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-textarea-autosize": "^8.3.3",
-    "textarea-markdown-editor": "^0.1.13"
+    "textarea-markdown-editor": "^0.1.13",
+    "use-http": "^1.0.26"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",

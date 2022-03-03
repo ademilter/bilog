@@ -19,6 +19,7 @@ const Button: React.FC<Props> = ({
       className={cx(
         "bg-gray-200 px-2 rounded-md select-none h-8",
         size === "small" ? "h-7" : "",
+        props.disabled ? "opacity-50" : "",
         className
       )}
       {...props}
