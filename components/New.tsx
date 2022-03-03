@@ -56,6 +56,7 @@ const NewPost: React.FC = () => {
       if (!responsePost.ok) throw new Error(responsePost.data.message);
       setPost(data);
     } catch (error) {
+      console.log(error.message);
       return router.push("/drafts");
     }
   };
@@ -66,7 +67,7 @@ const NewPost: React.FC = () => {
       if (!responsePost.ok) throw new Error(responsePost.data.message);
       await router.push(`draft/${data.id}`);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 
@@ -76,7 +77,7 @@ const NewPost: React.FC = () => {
       if (!responsePost.ok) throw new Error(responsePost.data.message);
       return router.push(`/p/${postId}`);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 
@@ -86,12 +87,16 @@ const NewPost: React.FC = () => {
       if (!responsePublish.ok) throw new Error(responsePublish.data.message);
       return router.push(`/p/${postId}`);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 
   React.useEffect(() => {
+    // is published or is draft
     if (post.published || postId) return;
+    // is empty
+    if (!post.title && !post.content) return;
+
     onCreate();
   }, [debouncedPost]);
 
