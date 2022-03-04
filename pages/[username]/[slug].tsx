@@ -4,7 +4,7 @@ import Router from "next/router";
 
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
-import GlobalStoreContext from "store/global";
+import GlobalStoreContext from "context/global";
 
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
@@ -15,21 +15,35 @@ import { deepCopy } from "../../lib/helper";
 // https://lux.camera/halide-2-7-its-a-keeper/
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const { slug } = params;
+  const id = slug.toString().split("-").at(-1);
+
   const post = await prisma.post.findUnique({
-    where: {
-      id: Number(params?.id) || -1,
-    },
+    where: { id },
     select: {
       id: true,
       title: true,
       content: true,
+      slug: true,
       published: true,
       createdAt: true,
-      author: {
+      tags: {
         select: {
-          email: true,
+          id: true,
           name: true,
-          image: true,
+        },
+      },
+      likes: {
+        select: {
+          id: true,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          picture: true,
         },
       },
     },
@@ -41,21 +55,20 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 const Post: React.FC<PostProps> = (props) => {
-  const { session } = React.useContext(GlobalStoreContext);
+  console.log(props);
+  const { user } = React.useContext(GlobalStoreContext);
+  const { id, title, content, published, user: author } = props;
 
-  const { id, title, content, published, author } = props;
+  const postBelongsToUser = user.username === author.username;
 
-  const userHasValidSession = Boolean(session);
-  const postBelongsToUser = session?.user?.email === author?.email;
-
-  async function publishPost(id: number) {
+  async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
       method: "PUT",
     });
     return Router.push("/");
   }
 
-  async function deletePost(id: number) {
+  async function deletePost(id: string) {
     await fetch(`/api/post/${id}`, {
       method: "DELETE",
     });
@@ -65,7 +78,7 @@ const Post: React.FC<PostProps> = (props) => {
   return (
     <Layout>
       <div className="mt-4 space-x-2">
-        {userHasValidSession && postBelongsToUser && (
+        {user && postBelongsToUser && (
           <>
             {published ? (
               <Button

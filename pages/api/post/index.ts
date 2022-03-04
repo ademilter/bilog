@@ -1,27 +1,36 @@
-import { getSession } from "next-auth/react";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import prisma from "lib/prisma";
+import slugify from "@sindresorhus/slugify";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("1234567890abcdefghijklmnoprstuvyzqw", 10);
 
 // POST /api/post
 
-export default async function (req, res) {
+async function createPost(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const session = await getSession({ req });
+    const { user } = getSession(req, res);
+    console.log(user);
 
-    if (!session) {
-      throw new Error("Not authenticated");
+    if (!user) {
+      throw new Error("Unauthorized");
     }
 
     const { title, content } = req.body;
 
-    if (!title && !content) {
-      throw new Error("Title and content are required");
+    if (!title) {
+      throw new Error("Title is required");
     }
+
+    // const slug = slugify(`${title}-${nanoid()}`);
+    // const slug = `${user.nickname}/${pastPath}`;
 
     const post = await prisma.post.create({
       data: {
         title: title,
         content: content,
-        author: { connect: { email: session?.user?.email } },
+        slug: slugify(title),
+        user: { connect: { email: user.email } },
       },
     });
 
@@ -30,3 +39,5 @@ export default async function (req, res) {
     res.status(400).json({ message: error.message });
   }
 }
+
+export default withApiAuthRequired(createPost);

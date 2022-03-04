@@ -1,11 +1,13 @@
-import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import "styles/global.css";
-import { GlobalStoreProvider } from "store/global";
+import { GlobalStoreProvider } from "context/global";
 import { Provider } from "use-http";
+import { UserProvider } from "@auth0/nextjs-auth0";
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const { user } = pageProps;
+
   const options = {
     interceptors: {
       request: async ({ options, url, path, route }) => {
@@ -18,7 +20,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   };
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <UserProvider user={user}>
       <Provider url={process.env.NEXT_PUBLIC_API_URL} options={options}>
         <GlobalStoreProvider>
           <Head>
@@ -32,7 +34,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           <Component {...pageProps} />
         </GlobalStoreProvider>
       </Provider>
-    </SessionProvider>
+    </UserProvider>
   );
 };
 

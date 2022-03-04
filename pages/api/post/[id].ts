@@ -4,13 +4,13 @@ import prisma from "lib/prisma";
 export default async function (req, res) {
   try {
     const { method } = req;
-    const postId = Number(req.query.id);
+    const { id } = req.query;
     const { title = "", content = "" } = req.body;
 
     switch (method) {
       case "GET":
         const getPost = await prisma.post.findUnique({
-          where: { id: postId },
+          where: { id },
         });
 
         if (!getPost) {
@@ -26,7 +26,7 @@ export default async function (req, res) {
         }
 
         const updatePost = await prisma.post.update({
-          where: { id: postId },
+          where: { id },
           data: { title, content },
         });
 
@@ -39,7 +39,7 @@ export default async function (req, res) {
 
       case "DELETE":
         await prisma.post.delete({
-          where: { id: postId },
+          where: { id },
         });
 
         res.status(200).json({ message: "Post deleted" });

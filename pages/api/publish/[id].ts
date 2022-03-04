@@ -3,7 +3,7 @@ import prisma from "lib/prisma";
 export default async function (req, res) {
   try {
     const { method } = req;
-    const id = Number(req.query.id);
+    const { id } = req.query;
     const { title, content } = req.body;
 
     switch (method) {

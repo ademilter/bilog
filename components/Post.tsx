@@ -4,28 +4,29 @@ import { markdownToHtml } from "lib/editor";
 import { DateTime } from "luxon";
 
 export type PostProps = {
-  id: number;
+  id: string;
   title: string;
   content: string;
+  slug: string;
   published: boolean;
+  publishedAt?: string;
   createdAt: string;
-  author: {
-    email: string;
+  likes?: [];
+  tags?: [];
+  user: {
+    id: string;
+    username: string;
     name: string;
-    image: string;
+    picture: string;
   };
 };
 
-const Post: React.FC<PostProps> = ({
-  id,
-  title,
-  author,
-  content,
-  createdAt,
-}) => {
+const Post: React.FC<PostProps> = (props) => {
+  const { id, title, user, slug, likes, content, createdAt } = props;
+
   return (
     <div>
-      <Link href={`/p/${id}`}>
+      <Link href={`/${user.username}/${slug}-${id}`}>
         <a className="block py-6">
           <header>
             <h3 className="text-3xl font-bold leading-none">{title}</h3>
@@ -37,16 +38,20 @@ const Post: React.FC<PostProps> = ({
           />
 
           <footer className="mt-4 flex items-center space-x-2 text-sm text-gray-500">
-            {author.image && (
-              <img
-                className="block w-6 h-6 rounded-full"
-                src={author.image}
-                alt={author.name}
-              />
-            )}
-            <span>{author.name}</span>
+            <img
+              className="block w-6 h-6 rounded-full"
+              src={user.picture}
+              alt={user.name}
+            />
+            <span>{user.name}</span>
             <span>·</span>
             <span>{DateTime.fromISO(createdAt.toString()).toRelative()}</span>
+            {likes && likes.length > 0 && (
+              <>
+                <span>·</span>
+                <span>{likes.length} like</span>
+              </>
+            )}
           </footer>
         </a>
       </Link>

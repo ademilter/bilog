@@ -2,24 +2,24 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
-import { signIn, signOut } from "next-auth/react";
 import Container from "./Container";
-import GlobalStoreContext from "store/global";
+import GlobalStoreContext from "context/global";
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const { session } = React.useContext(GlobalStoreContext);
+  const { user } = React.useContext(GlobalStoreContext);
+  console.log(user);
 
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
 
-  if (!session) {
+  if (!user) {
     return (
       <header className="bg-gray-100 py-4">
         <Container>
           <div className="flex items-center justify-between">
             <nav className="flex items-center space-x-2">
-              <button onClick={() => signIn()}>Login</button>
+              <a href="/api/auth/login">Login</a>
             </nav>
           </div>
         </Container>
@@ -47,13 +47,11 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <details className="relative flex">
               <summary className="inline-flex">
-                {session.user.image && (
-                  <img
-                    className="block w-8 h-8 rounded-full"
-                    src={session.user.image}
-                    alt={session.user.name}
-                  />
-                )}
+                <img
+                  className="block w-8 h-8 rounded-full"
+                  src={user.picture}
+                  alt={user.name}
+                />
               </summary>
 
               <div
@@ -63,7 +61,7 @@ const Header: React.FC = () => {
                 <Link href="/new">
                   <a>New post</a>
                 </Link>
-                <button onClick={() => signOut()}>Log out</button>
+                <a href="/api/auth/logout">Log out</a>
               </div>
             </details>
           </div>

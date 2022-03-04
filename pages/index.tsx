@@ -22,13 +22,26 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       id: true,
       title: true,
       content: true,
+      slug: true,
       published: true,
       createdAt: true,
-      author: {
+      tags: {
         select: {
-          email: true,
+          id: true,
           name: true,
-          image: true,
+        },
+      },
+      likes: {
+        select: {
+          id: true,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          picture: true,
         },
       },
     },
