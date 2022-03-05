@@ -21,36 +21,36 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let post = null;
   let error = null;
 
-  await prisma.post
-    .findUnique({
-      where: { id },
-    })
-    .then((data) => {
-      if (!data) {
-        error = "Post not found";
-      }
-      post = data;
-    })
-    .catch((e) => {
-      error = e;
-    });
+  // await prisma.post
+  //   .findUnique({
+  //     where: { id },
+  //   })
+  //   .then((data) => {
+  //     if (!data) {
+  //       error = "Post not found";
+  //     }
+  //     post = data;
+  //   })
+  //   .catch((e) => {
+  //     error = e;
+  //   });
 
   return {
     props: {
-      post: deepCopy(post),
-      error,
+      slug,
+      id,
     },
   };
 };
 
 const Post: React.FC<{
   user: UserProfile;
-  post: null | PostProps;
-  error: unknown;
-}> = ({ user: session, post, error }) => {
+  slug: unknown;
+  id: unknown;
+}> = ({ user: session, slug, id }) => {
   console.log(session);
-  console.log(post);
-  console.log(error);
+  console.log(id);
+  console.log(slug);
 
   // const { id, title, content, published, user } = post;
   //
