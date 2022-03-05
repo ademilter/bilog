@@ -21,41 +21,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let post = null;
   let error = null;
 
-  try {
-    post = await prisma.post.findUnique({
+  post = await prisma.post
+    .findUnique({
       where: { id },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        slug: true,
-        published: true,
-        createdAt: true,
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        likes: {
-          select: {
-            id: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            picture: true,
-          },
-        },
-      },
+    })
+    .then((post) => {
+      if (!post) {
+        error = "Post not found";
+      }
+    })
+    .catch((e) => {
+      error = e;
     });
-  } catch (e) {
-    error = e;
-    console.error(e);
-  }
 
   return {
     props: {
