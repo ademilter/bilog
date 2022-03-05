@@ -59,7 +59,7 @@ const Post: React.FC<PostProps> = (props) => {
   const { user } = React.useContext(GlobalStoreContext);
   const { id, title, content, published, user: author } = props;
 
-  const postBelongsToUser = user.username === author.username;
+  const postBelongsToUser = user && user?.username === author.username;
 
   async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
