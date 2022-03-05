@@ -1,6 +1,8 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import type { UserProfile } from "@auth0/nextjs-auth0";
 
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
@@ -52,16 +54,17 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   console.log(post);
 
   return {
-    props: deepCopy(post),
+    props: { post: deepCopy(post) },
   };
 };
 
-const Post: React.FC<PostProps> = (props) => {
-  const { user: authUser } = React.useContext(GlobalStoreContext);
-  const { id, title, content, published, user } = props;
+const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
+  user: authUser,
+  post,
+}) => {
+  const { id, title, content, published, user } = post;
 
-  const postBelongsToUser = authUser && authUser.username === user.username;
-  console.log(postBelongsToUser);
+  const postBelongsToUser = authUser && authUser.nickname === user.username;
 
   async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
@@ -128,4 +131,4 @@ const Post: React.FC<PostProps> = (props) => {
   );
 };
 
-export default Post;
+export default withPageAuthRequired(Post);
