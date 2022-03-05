@@ -6,7 +6,7 @@ export type Props = {
   data: PostProps[];
 };
 
-const PostList: React.FC<Props> = ({ data }) => {
+const PostList: React.FC<Props> = ({ data = [] }) => {
   return (
     <div className="divide-y divide-gray-200">
       {data.map((post) => (

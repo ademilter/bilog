@@ -1,5 +1,4 @@
 import React from "react";
-// import type { UserProfile } from "@auth0/nextjs-auth0";
 import { useUser } from "@auth0/nextjs-auth0";
 import useFetch from "use-http";
 

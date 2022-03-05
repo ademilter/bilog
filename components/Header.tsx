@@ -60,6 +60,9 @@ const Header: React.FC = () => {
                 <Link href="/new">
                   <a>New post</a>
                 </Link>
+                <Link href="/profile">
+                  <a>Profile</a>
+                </Link>
                 <a href="/api/auth/logout">Log out</a>
               </div>
             </details>
