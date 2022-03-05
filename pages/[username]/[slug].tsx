@@ -69,7 +69,7 @@ const Post: React.FC<{
   user: UserProfile;
   post: null | PostProps;
   error: unknown;
-}> = ({ user: session, post }) => {
+}> = ({ user: session, post, error }) => {
   console.log(session);
   console.log(post);
   console.log(error);
