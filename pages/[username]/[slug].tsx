@@ -6,20 +6,18 @@ import type { UserProfile } from "@auth0/nextjs-auth0";
 
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
-import GlobalStoreContext from "context/global";
+import { deepCopy, getPostIdFromSlug } from "lib/helper";
 
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
 import Button from "components/Button";
-import { deepCopy } from "../../lib/helper";
 
 // Examples
 // https://lux.camera/halide-2-7-its-a-keeper/
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { slug } = params;
-  console.log(typeof slug);
-  const id = `${slug}`.split("-").at(-1);
+  const id = getPostIdFromSlug(slug as string);
 
   const post = await prisma.post.findUnique({
     where: { id },
