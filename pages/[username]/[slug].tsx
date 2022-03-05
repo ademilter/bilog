@@ -17,49 +17,62 @@ import Button from "components/Button";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { slug } = params;
-  // const id = slug.toString().split("-").at(-1);
+  const id = slug.toString().split("-").at(-1);
+  let post = null;
+  let error = null;
 
-  // const post = await prisma.post.findUnique({
-  //   where: { id },
-  //   select: {
-  //     id: true,
-  //     title: true,
-  //     content: true,
-  //     slug: true,
-  //     published: true,
-  //     createdAt: true,
-  //     tags: {
-  //       select: {
-  //         id: true,
-  //         name: true,
-  //       },
-  //     },
-  //     likes: {
-  //       select: {
-  //         id: true,
-  //       },
-  //     },
-  //     user: {
-  //       select: {
-  //         id: true,
-  //         username: true,
-  //         name: true,
-  //         picture: true,
-  //       },
-  //     },
-  //   },
-  // });
+  try {
+    post = await prisma.post.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        slug: true,
+        published: true,
+        createdAt: true,
+        tags: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        likes: {
+          select: {
+            id: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            picture: true,
+          },
+        },
+      },
+    });
+  } catch (e) {
+    error = e;
+    console.error(e);
+  }
 
   return {
-    props: { slug },
+    props: {
+      post: deepCopy(post),
+      error,
+    },
   };
 };
 
-const Post: React.FC<{ user: UserProfile; slug: string }> = ({
-  user: session,
-  slug,
-}) => {
-  console.log(session, slug);
+const Post: React.FC<{
+  user: UserProfile;
+  post: null | PostProps;
+  error: unknown;
+}> = ({ user: session, post }) => {
+  console.log(session);
+  console.log(post);
+  console.log(error);
 
   // const { id, title, content, published, user } = post;
   //
