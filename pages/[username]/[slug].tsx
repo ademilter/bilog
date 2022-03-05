@@ -9,7 +9,7 @@ import prisma from "lib/prisma";
 import { deepCopy, getPostIdFromSlug } from "lib/helper";
 
 import Layout from "components/Layout";
-import { PostProps } from "components/Post";
+import { PostProps, selectPost } from "components/Post";
 import Button from "components/Button";
 
 // Examples
@@ -21,33 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   const post = await prisma.post.findUnique({
     where: { id },
-    select: {
-      id: true,
-      title: true,
-      content: true,
-      slug: true,
-      published: true,
-      createdAt: true,
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      likes: {
-        select: {
-          id: true,
-        },
-      },
-      user: {
-        select: {
-          id: true,
-          username: true,
-          name: true,
-          picture: true,
-        },
-      },
-    },
+    select: selectPost,
   });
 
   if (!post) {

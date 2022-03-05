@@ -3,24 +3,6 @@ import Link from "next/link";
 import { markdownToHtml } from "lib/editor";
 import { DateTime } from "luxon";
 
-export type PostProps = {
-  id: string;
-  title: string;
-  content: string;
-  slug: string;
-  published: boolean;
-  publishedAt?: string;
-  createdAt: string;
-  likes?: [];
-  tags?: [];
-  user: {
-    id: string;
-    username: string;
-    name: string;
-    picture: string;
-  };
-};
-
 const Post: React.FC<PostProps> = (props) => {
   const { id, title, user, slug, likes, content, createdAt } = props;
 
@@ -57,6 +39,52 @@ const Post: React.FC<PostProps> = (props) => {
       </Link>
     </div>
   );
+};
+
+export type PostProps = {
+  id: string;
+  title: string;
+  content: string;
+  slug: string;
+  published: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  likes?: [];
+  tags?: [];
+  user: {
+    id: string;
+    username: string;
+    name: string;
+    picture: string;
+  };
+};
+
+export const selectPost = {
+  id: true,
+  title: true,
+  content: true,
+  slug: true,
+  published: true,
+  createdAt: true,
+  tags: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  likes: {
+    select: {
+      id: true,
+    },
+  },
+  user: {
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      picture: true,
+    },
+  },
 };
 
 export default Post;

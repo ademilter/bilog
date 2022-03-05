@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "components/Layout";
-import { PostProps } from "components/Post";
+import { PostProps, selectPost } from "components/Post";
 import prisma from "lib/prisma";
 import PostList from "components/PostList";
 import { deepCopy } from "lib/helper";
@@ -21,33 +21,7 @@ export const getServerSideProps = withPageAuthRequired({
       orderBy: {
         createdAt: "desc",
       },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        slug: true,
-        published: true,
-        createdAt: true,
-        tags: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        likes: {
-          select: {
-            id: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            username: true,
-            name: true,
-            picture: true,
-          },
-        },
-      },
+      select: selectPost,
     });
 
     return {
