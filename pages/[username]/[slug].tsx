@@ -21,14 +21,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let post = null;
   let error = null;
 
-  post = await prisma.post
+  await prisma.post
     .findUnique({
       where: { id },
     })
-    .then((post) => {
-      if (!post) {
+    .then((data) => {
+      if (!data) {
         error = "Post not found";
       }
+      post = data;
     })
     .catch((e) => {
       error = e;
