@@ -16,49 +16,56 @@ import { deepCopy } from "../../lib/helper";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { slug } = params;
+  console.log(slug);
   const id = slug.toString().split("-").at(-1);
+  console.log(id);
 
-  const post = await prisma.post.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      title: true,
-      content: true,
-      slug: true,
-      published: true,
-      createdAt: true,
-      tags: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      likes: {
-        select: {
-          id: true,
-        },
-      },
-      user: {
-        select: {
-          id: true,
-          username: true,
-          name: true,
-          picture: true,
-        },
-      },
-    },
-  });
-
+  // const post = await prisma.post.findUnique({
+  //   where: { id },
+  //   select: {
+  //     id: true,
+  //     title: true,
+  //     content: true,
+  //     slug: true,
+  //     published: true,
+  //     createdAt: true,
+  //     tags: {
+  //       select: {
+  //         id: true,
+  //         name: true,
+  //       },
+  //     },
+  //     likes: {
+  //       select: {
+  //         id: true,
+  //       },
+  //     },
+  //     user: {
+  //       select: {
+  //         id: true,
+  //         username: true,
+  //         name: true,
+  //         picture: true,
+  //       },
+  //     },
+  //   },
+  // });
+  //
+  // return {
+  //   props: deepCopy(post),
+  // };
   return {
-    props: deepCopy(post),
+    props: { slug, id },
   };
 };
 
 const Post: React.FC<PostProps> = (props) => {
-  const { user } = React.useContext(GlobalStoreContext);
-  const { id, title, content, published, user: author } = props;
+  console.log(props);
+  // const { user } = React.useContext(GlobalStoreContext);
+  // const { id, title, content, published, user: author } = props;
 
-  const postBelongsToUser = user && user?.username === author.username;
+  // const postBelongsToUser = user && user.username === author.username;
+  // console.log(postBelongsToUser);
 
   async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
@@ -76,51 +83,51 @@ const Post: React.FC<PostProps> = (props) => {
 
   return (
     <Layout>
-      <div className="mt-4 space-x-2">
-        {user && postBelongsToUser && (
-          <>
-            {published ? (
-              <Button
-                className="!bg-blue-100 text-blue-700"
-                onClick={() => Router.push("/edit/[id]", `/edit/${id}`)}
-              >
-                Edit
-              </Button>
-            ) : (
-              <>
-                <Button
-                  className="!bg-blue-100 text-blue-700"
-                  onClick={() => publishPost(id)}
-                >
-                  Publish
-                </Button>
-                <Button
-                  className="!bg-blue-100 text-blue-700"
-                  onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}
-                >
-                  Edit
-                </Button>
-              </>
-            )}
-            <Button
-              className="!bg-red-100 text-red-700"
-              onClick={() => deletePost(id)}
-            >
-              Delete
-            </Button>
-          </>
-        )}
-      </div>
+      {/*<div className="mt-4 space-x-2">*/}
+      {/*  {postBelongsToUser && (*/}
+      {/*    <>*/}
+      {/*      {published ? (*/}
+      {/*        <Button*/}
+      {/*          className="!bg-blue-100 text-blue-700"*/}
+      {/*          onClick={() => Router.push("/edit/[id]", `/edit/${id}`)}*/}
+      {/*        >*/}
+      {/*          Edit*/}
+      {/*        </Button>*/}
+      {/*      ) : (*/}
+      {/*        <>*/}
+      {/*          <Button*/}
+      {/*            className="!bg-blue-100 text-blue-700"*/}
+      {/*            onClick={() => publishPost(id)}*/}
+      {/*          >*/}
+      {/*            Publish*/}
+      {/*          </Button>*/}
+      {/*          <Button*/}
+      {/*            className="!bg-blue-100 text-blue-700"*/}
+      {/*            onClick={() => Router.push("/draft/[id]", `/draft/${id}`)}*/}
+      {/*          >*/}
+      {/*            Edit*/}
+      {/*          </Button>*/}
+      {/*        </>*/}
+      {/*      )}*/}
+      {/*      <Button*/}
+      {/*        className="!bg-red-100 text-red-700"*/}
+      {/*        onClick={() => deletePost(id)}*/}
+      {/*      >*/}
+      {/*        Delete*/}
+      {/*      </Button>*/}
+      {/*    </>*/}
+      {/*  )}*/}
+      {/*</div>*/}
 
-      <div className="mt-10 prose prose-zinc max-w-none">
-        {!published && <div>(Draft)</div>}
+      {/*<div className="mt-10 prose prose-zinc max-w-none">*/}
+      {/*  {!published && <div>(Draft)</div>}*/}
 
-        <p>{author.name}</p>
+      {/*  <p>{author.name}</p>*/}
 
-        <div className="text-5xl leading-none font-bold">{title}</div>
+      {/*  <div className="text-5xl leading-none font-bold">{title}</div>*/}
 
-        <div dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />
-      </div>
+      {/*  <div dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />*/}
+      {/*</div>*/}
     </Layout>
   );
 };
