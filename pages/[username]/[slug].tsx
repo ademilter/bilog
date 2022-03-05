@@ -18,6 +18,7 @@ import { deepCopy } from "../../lib/helper";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { slug } = params;
+  console.log(typeof slug);
   const id = `${slug}`.split("-").at(-1);
 
   const post = await prisma.post.findUnique({
