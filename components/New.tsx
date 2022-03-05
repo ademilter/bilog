@@ -12,15 +12,16 @@ import Button from "components/Button";
 import Editor from "components/Editor/Editor";
 import Toolbar from "components/Editor/Toolbar";
 import Container from "components/Container";
+import { PostProps } from "./Post";
 
 export enum EditorState {
   Edit = 0,
   Preview = 1,
 }
 
-const NewPost: React.FC = () => {
+const NewPost: React.FC<{ post: PostProps }> = ({ post: savedPost }) => {
   const router = useRouter();
-  const postId = router.query.id || null;
+  const postId = savedPost.id;
 
   const refEditor = React.useRef<TextareaMarkdownRef>(null);
 
@@ -29,10 +30,8 @@ const NewPost: React.FC = () => {
   );
 
   const [post, setPost] = React.useState({
-    title: "",
-    content: "",
-    slug: "",
-    published: false,
+    title: savedPost.title,
+    content: savedPost.content,
   });
 
   const debouncedPost = useDebounce(post, 1000);
@@ -51,17 +50,6 @@ const NewPost: React.FC = () => {
     loading: loadingPublish,
   } = useFetch("/publish");
 
-  const onGet = async () => {
-    try {
-      const data = await getPost(postId as string);
-      if (!responsePost.ok) throw new Error(responsePost.data.message);
-      setPost(data);
-    } catch (error) {
-      console.log(error.message);
-      return router.push("/drafts");
-    }
-  };
-
   const onCreate = async () => {
     try {
       const data = await createPost(post);
@@ -76,7 +64,7 @@ const NewPost: React.FC = () => {
     try {
       await updatePost(postId, post);
       if (!responsePost.ok) throw new Error(responsePost.data.message);
-      return router.push(post.slug);
+      return router.push(savedPost.slug);
     } catch (error) {
       console.error(error.message);
     }
@@ -86,7 +74,7 @@ const NewPost: React.FC = () => {
     try {
       await publishPost(postId, post);
       if (!responsePublish.ok) throw new Error(responsePublish.data.message);
-      return router.push(post.slug);
+      return router.push(savedPost.slug);
     } catch (error) {
       console.error(error.message);
     }
@@ -94,17 +82,12 @@ const NewPost: React.FC = () => {
 
   React.useEffect(() => {
     // is published or is draft
-    if (post.published || postId) return;
+    if (savedPost.published || postId) return;
     // is empty
     if (!post.title && !post.content) return;
 
     onCreate();
   }, [debouncedPost]);
-
-  React.useEffect(() => {
-    if (!postId) return;
-    onGet();
-  }, [postId]);
 
   return (
     <Layout
@@ -120,7 +103,7 @@ const NewPost: React.FC = () => {
               >
                 Publish
               </Button>
-              {!post.published && (
+              {!savedPost.published && (
                 <Button
                   size="small"
                   disabled={loadingPost}
