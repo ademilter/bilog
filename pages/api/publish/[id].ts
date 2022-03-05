@@ -1,11 +1,28 @@
 import prisma from "lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 
-export default async function (req, res) {
+async function publish(req: NextApiRequest, res: NextApiResponse) {
+  const { user } = getSession(req, res);
+  if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+  const { method } = req;
+  const { id } = req.query;
+  const { title, content } = req.body;
+
+  const post = await prisma.post.findUnique({
+    where: { id: id as string },
+    include: { user: true },
+  });
+
+  // Check if post exists
+  if (!post) return res.status(404).json({ message: "Post not found" });
+
+  // Check if the user is the author of the post
+  if (post.user.username !== user.nickname)
+    return res.status(403).json({ message: "Unauthorized" });
+
   try {
-    const { method } = req;
-    const { id } = req.query;
-    const { title, content } = req.body;
-
     switch (method) {
       case "PUT":
         if (!title && !content) {
@@ -13,7 +30,7 @@ export default async function (req, res) {
         }
 
         const post = await prisma.post.update({
-          where: { id },
+          where: { id: id as string },
           data: { title, content, published: true },
         });
 
@@ -35,3 +52,5 @@ export default async function (req, res) {
     });
   }
 }
+
+export default withApiAuthRequired(publish);

@@ -50,6 +50,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     },
   });
 
+  if (!post) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  }
+
   return {
     props: { post: deepCopy(post) },
   };
