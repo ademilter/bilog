@@ -6,12 +6,11 @@ import type { UserProfile } from "@auth0/nextjs-auth0";
 
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
-import GlobalStoreContext from "context/global";
+import { deepCopy } from "lib/helper";
 
 import Layout from "components/Layout";
 import { PostProps } from "components/Post";
 import Button from "components/Button";
-import { deepCopy } from "../../lib/helper";
 
 // Examples
 // https://lux.camera/halide-2-7-its-a-keeper/
@@ -59,12 +58,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
-  user: authUser,
+  user: session,
   post,
 }) => {
   const { id, title, content, published, user } = post;
 
-  const postBelongsToUser = authUser && authUser.nickname === user.username;
+  const postBelongsToUser = session && session.nickname === user.username;
 
   async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
