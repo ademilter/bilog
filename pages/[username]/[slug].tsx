@@ -55,7 +55,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 const Post: React.FC<PostProps> = (props) => {
-  console.log(props);
   const { user } = React.useContext(GlobalStoreContext);
   const { id, title, content, published, user: author } = props;
 

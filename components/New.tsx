@@ -31,6 +31,7 @@ const NewPost: React.FC = () => {
   const [post, setPost] = React.useState({
     title: "",
     content: "",
+    slug: "",
     published: false,
   });
 
@@ -75,7 +76,7 @@ const NewPost: React.FC = () => {
     try {
       await updatePost(postId, post);
       if (!responsePost.ok) throw new Error(responsePost.data.message);
-      return router.push(`/p/${postId}`);
+      return router.push(post.slug);
     } catch (error) {
       console.error(error.message);
     }
@@ -85,7 +86,7 @@ const NewPost: React.FC = () => {
     try {
       await publishPost(postId, post);
       if (!responsePublish.ok) throw new Error(responsePublish.data.message);
-      return router.push(`/p/${postId}`);
+      return router.push(post.slug);
     } catch (error) {
       console.error(error.message);
     }

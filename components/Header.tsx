@@ -8,7 +8,6 @@ import GlobalStoreContext from "context/global";
 const Header: React.FC = () => {
   const router = useRouter();
   const { user } = React.useContext(GlobalStoreContext);
-  console.log(user);
 
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;

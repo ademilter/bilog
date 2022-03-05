@@ -26,7 +26,7 @@ const Post: React.FC<PostProps> = (props) => {
 
   return (
     <div>
-      <Link href={`/${user.username}/${slug}-${id}`}>
+      <Link href={slug}>
         <a className="block py-6">
           <header>
             <h3 className="text-3xl font-bold leading-none">{title}</h3>
