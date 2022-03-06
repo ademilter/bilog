@@ -18,7 +18,7 @@ const Post: React.FC<PostProps> = (props) => {
 
       <div
         className="mt-2 line-clamp-2"
-        dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
+        dangerouslySetInnerHTML={{ __html: markdownToHtml(content || "") }}
       />
 
       <footer className="mt-4 flex items-center space-x-2 text-sm text-gray-500">

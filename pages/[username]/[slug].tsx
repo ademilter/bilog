@@ -106,7 +106,9 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
 
         <div className="text-5xl leading-none font-bold">{title}</div>
 
-        <div dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />
+        <div
+          dangerouslySetInnerHTML={{ __html: markdownToHtml(content || "") }}
+        />
       </div>
     </Layout>
   );

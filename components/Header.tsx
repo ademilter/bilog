@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                 <Link href="/new">
                   <a>New post</a>
                 </Link>
-                <Link href="/profile">
+                <Link href={`/${session.nickname}`}>
                   <a>Profile</a>
                 </Link>
                 <a href="/api/auth/logout">Log out</a>

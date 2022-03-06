@@ -30,14 +30,13 @@ const NewPost: React.FC<{ post: PostProps }> = ({ post: savedPost }) => {
   );
 
   const [post, setPost] = React.useState({
-    title: savedPost.title,
-    content: savedPost.content,
+    title: savedPost.title || "",
+    content: savedPost.content || "",
   });
 
   const debouncedPost = useDebounce(post, 1000);
 
   const {
-    get: getPost,
     post: createPost,
     put: updatePost,
     response: responsePost,

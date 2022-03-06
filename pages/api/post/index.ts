@@ -18,12 +18,14 @@ async function createPost(req: NextApiRequest, res: NextApiResponse) {
 
     const { title, content } = req.body;
 
-    if (!title) {
-      throw new Error("Title is required");
+    if (!title && !content) {
+      throw new Error("Title or content is required");
     }
 
+    const text = title ? title.substring(0, 8) : content.substring(0, 8);
+
     const id = nanoid();
-    const postSlug = slugify(`${title}-${id}`);
+    const postSlug = slugify(`${text}-${id}`);
     const slug = `/${user.nickname}/${postSlug}`;
 
     const post = await prisma.post.create({

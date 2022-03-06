@@ -25,21 +25,9 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).json({ message: "Unauthorized" });
 
     switch (method) {
-      // case "GET":
-      //   const getPost = await prisma.post.findUnique({
-      //     where: { id },
-      //   });
-      //
-      //   if (!getPost) {
-      //     throw new Error("Post not found");
-      //   }
-      //
-      //   res.status(200).json(getPost);
-      //   break;
-
       case "PUT":
         if (!title && !content) {
-          throw new Error("title, content are required");
+          throw new Error("title or content is required");
         }
 
         const updatePost = await prisma.post.update({
