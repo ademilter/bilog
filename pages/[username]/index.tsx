@@ -1,21 +1,27 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import prisma from "lib/prisma";
+import { DateTime } from "luxon";
 import { deepCopy } from "lib/helper";
 import Layout from "components/Layout";
-import { selectPost } from "../../components/Post";
-import PostList from "../../components/PostList";
+import { selectPost } from "components/Post";
+import Button from "components/Button";
+import PostList from "components/PostList";
+import GlobalContext from "context/global";
+import Link from "next/link";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { username } = params;
 
   const user = await prisma.user.findUnique({
-    where: { username: username as string },
+    where: {
+      username: username as string,
+    },
     select: {
       id: true,
       picture: true,
       createdAt: true,
+      username: true,
       name: true,
       posts: {
         select: selectPost,
@@ -33,25 +39,40 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 
   return {
-    props: { user: deepCopy(user) },
+    props: {
+      profile: deepCopy(user),
+    },
   };
 };
 
-const Profile: React.FC<{ user }> = ({ user }) => {
-  console.log(user);
+const Profile: React.FC<{ profile: any }> = ({ profile }) => {
+  const { username, name, picture, createdAt, posts } = profile;
+  const { session } = React.useContext(GlobalContext);
+
+  const isMe = session?.nickname === username;
 
   return (
     <Layout>
-      <div>
-        <img className="w-40 rounded-full" src={user.picture} alt={user.name} />
-        <h1 className="text-2xl font-bold">{user.name}</h1>
+      <header>
+        <img className="w-40 rounded-full" src={picture} alt={name} />
+        <h1 className="text-2xl font-bold">{name}</h1>
         <p className="text-sm">
-          Joined {new Date(user.createdAt).toDateString()}
+          Joined {DateTime.fromISO(createdAt).toFormat("DDD")} (
+          {DateTime.fromISO(createdAt).toRelative()})
         </p>
-        <PostList data={user.posts!} />
-      </div>
+
+        {isMe && (
+          <div className="mt-2">
+            <Link href="/settings">
+              <a>Edit Profile</a>
+            </Link>
+          </div>
+        )}
+      </header>
+
+      <PostList data={posts!} />
     </Layout>
   );
 };
 
-export default withPageAuthRequired(Profile);
+export default Profile;

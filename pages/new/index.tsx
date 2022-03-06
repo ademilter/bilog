@@ -1,6 +1,6 @@
 import React from "react";
-import NewPost from "components/New";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import NewPost from "components/New";
 
 export const getServerSideProps = withPageAuthRequired({
   returnTo: "/",

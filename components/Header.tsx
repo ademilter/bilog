@@ -3,16 +3,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import cx from "classnames";
 import Container from "./Container";
-import GlobalStoreContext from "context/global";
+import GlobalContext from "context/global";
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const { user } = React.useContext(GlobalStoreContext);
+  const { session } = React.useContext(GlobalContext);
 
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
 
-  if (!user) {
+  if (!session) {
     return (
       <header className="bg-gray-100 py-4">
         <Container>
@@ -48,8 +48,8 @@ const Header: React.FC = () => {
               <summary className="inline-flex">
                 <img
                   className="block w-8 h-8 rounded-full"
-                  src={user.picture}
-                  alt={user.name}
+                  src={session.picture}
+                  alt={session.name}
                 />
               </summary>
 

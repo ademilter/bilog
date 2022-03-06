@@ -1,13 +1,11 @@
 import React from "react";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-import type { UserProfile } from "@auth0/nextjs-auth0";
-
+import Link from "next/link";
+import GlobalContext from "context/global";
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
 import { deepCopy, getPostIdFromSlug } from "lib/helper";
-
 import Layout from "components/Layout";
 import { PostProps, selectPost } from "components/Post";
 import Button from "components/Button";
@@ -38,14 +36,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   };
 };
 
-const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
-  user: sessionUser,
-  post,
-}) => {
+const Post: React.FC<{ post: PostProps }> = ({ post }) => {
+  const { session } = React.useContext(GlobalContext);
+
   const { id, title, content, published, user } = post;
 
-  const postBelongsToUser =
-    sessionUser && sessionUser.nickname === user.username;
+  const isItMine = session?.nickname === user.username;
 
   async function publishPost(id: string) {
     await fetch(`/api/publish/${id}`, {
@@ -64,7 +60,7 @@ const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
   return (
     <Layout>
       <div className="mt-4 space-x-2">
-        {postBelongsToUser && (
+        {isItMine && (
           <>
             {published ? (
               <Button
@@ -102,7 +98,11 @@ const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
       <div className="mt-10 prose prose-zinc max-w-none">
         {!published && <div>(Draft)</div>}
 
-        <p>{user.name}</p>
+        <div className="mb-4">
+          <Link href={`/${user.username}`}>
+            <a>{user.name}</a>
+          </Link>
+        </div>
 
         <div className="text-5xl leading-none font-bold">{title}</div>
 
@@ -112,4 +112,4 @@ const Post: React.FC<{ user: UserProfile; post: PostProps }> = ({
   );
 };
 
-export default withPageAuthRequired(Post);
+export default Post;

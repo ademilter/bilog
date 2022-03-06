@@ -1,26 +1,32 @@
 import React from "react";
 import { useUser } from "@auth0/nextjs-auth0";
 import useFetch from "use-http";
+import type { UserProfile } from "@auth0/nextjs-auth0";
 
-const GlobalStoreContext = React.createContext({
-  user: null,
+type GlobalContextProps = {
+  session: UserProfile | null;
+  userLoading: boolean;
+};
+
+const GlobalContext = React.createContext<GlobalContextProps>({
+  session: null,
   userLoading: true,
 });
 
-export function GlobalStoreProvider({ children }) {
-  const { user, isLoading: userLoading } = useUser();
+export function GlobalContextProvider({ children }) {
+  const { user: session, isLoading: userLoading } = useUser();
   const { post: complete } = useFetch("/auth/complete");
 
   React.useEffect(() => {
-    if (!user) return;
+    if (!session) return;
     complete();
-  }, [user]);
+  }, [session]);
 
   return (
-    <GlobalStoreContext.Provider value={{ user, userLoading }}>
+    <GlobalContext.Provider value={{ session, userLoading }}>
       {children}
-    </GlobalStoreContext.Provider>
+    </GlobalContext.Provider>
   );
 }
 
-export default GlobalStoreContext;
+export default GlobalContext;

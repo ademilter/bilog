@@ -1,9 +1,7 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-
 import prisma from "lib/prisma";
 import { deepCopy } from "lib/helper";
-
 import { PostProps, selectPost } from "components/Post";
 import Layout from "components/Layout";
 import PostList from "components/PostList";

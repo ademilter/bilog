@@ -9,20 +9,20 @@ export const getServerSideProps = withPageAuthRequired({
     const { user } = getSession(req, res);
 
     return {
-      props: { user },
+      props: { session: user },
     };
   },
 });
 
 type Props = {
-  user: UserProfile;
+  session: UserProfile;
 };
 
-const Settings: React.FC<Props> = ({ user }) => {
+const Settings: React.FC<Props> = ({ session }) => {
   return (
     <Layout>
       <div>profile</div>
-      <div>{JSON.stringify(user)}</div>
+      <div>{JSON.stringify(session)}</div>
     </Layout>
   );
 };

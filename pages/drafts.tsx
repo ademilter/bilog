@@ -1,10 +1,10 @@
 import React from "react";
-import Layout from "components/Layout";
-import { PostProps, selectPost } from "components/Post";
-import prisma from "lib/prisma";
-import PostList from "components/PostList";
-import { deepCopy } from "lib/helper";
 import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
+import prisma from "lib/prisma";
+import { deepCopy } from "lib/helper";
+import Layout from "components/Layout";
+import PostList from "components/PostList";
+import { PostProps, selectPost } from "components/Post";
 
 export const getServerSideProps = withPageAuthRequired({
   returnTo: "/",
