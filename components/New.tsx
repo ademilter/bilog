@@ -3,10 +3,8 @@ import { useRouter } from "next/router";
 import { TextareaMarkdownRef } from "textarea-markdown-editor";
 import TextareaAutosize from "react-textarea-autosize";
 import useFetch from "use-http";
-
 import { markdownToHtml } from "lib/editor";
 import useDebounce from "hooks/useDebounce";
-
 import Layout from "components/Layout";
 import Button from "components/Button";
 import Editor from "components/Editor/Editor";
@@ -34,7 +32,7 @@ const NewPost: React.FC<{ post: PostProps }> = ({ post: savedPost }) => {
     content: savedPost.content || "",
   });
 
-  const debouncedPost = useDebounce(post, 1000);
+  const debouncedPost = useDebounce(post, 3000);
 
   const {
     post: createPost,
@@ -127,6 +125,7 @@ const NewPost: React.FC<{ post: PostProps }> = ({ post: savedPost }) => {
             <TextareaAutosize
               name="title"
               placeholder="Title..."
+              autoFocus
               value={post.title}
               className="text-4xl leading-none bg-transparent font-bold w-full border-0 outline-0 resize-none placeholder-gray-400"
               onChange={(e) =>

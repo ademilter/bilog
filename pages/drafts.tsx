@@ -16,8 +16,6 @@ export const getServerSideProps = withPageAuthRequired({
         user: { email: user.email },
         published: false,
       },
-      // skip: 0,
-      // take: 5,
       orderBy: {
         createdAt: "desc",
       },

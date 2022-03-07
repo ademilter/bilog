@@ -4,7 +4,7 @@ import prisma from "lib/prisma";
 import { DateTime } from "luxon";
 import { deepCopy } from "lib/helper";
 import Layout from "components/Layout";
-import { selectPost } from "components/Post";
+import { PostProps, selectPost } from "components/Post";
 import PostList from "components/PostList";
 import GlobalContext from "context/global";
 import Link from "next/link";
@@ -22,9 +22,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       createdAt: true,
       username: true,
       name: true,
-      posts: {
-        select: selectPost,
-      },
     },
   });
 
@@ -37,19 +34,30 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const filterPublishedPost = user.posts.filter((post) => {
-    return post.published;
+  const posts = await prisma.post.findMany({
+    where: {
+      published: true,
+      user: { username: username as string },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: selectPost,
   });
 
   return {
     props: {
-      profile: { ...deepCopy(user), posts: deepCopy(filterPublishedPost) },
+      profile: deepCopy(user),
+      posts: posts.length ? deepCopy(posts) : [],
     },
   };
 };
 
-const Profile: React.FC<{ profile: any }> = ({ profile }) => {
-  const { username, name, picture, createdAt, posts } = profile;
+const Profile: React.FC<{ profile: any; posts: PostProps[] }> = ({
+  profile,
+  posts,
+}) => {
+  const { username, name, picture, createdAt } = profile;
   const { session } = React.useContext(GlobalContext);
 
   const isMe = session?.nickname === username;
@@ -75,7 +83,7 @@ const Profile: React.FC<{ profile: any }> = ({ profile }) => {
       </header>
 
       <main>
-        <PostList data={posts!} hideAuthor />
+        <PostList data={posts} hideAuthor />
       </main>
     </Layout>
   );
