@@ -14,5 +14,9 @@ export const getServerSideProps = withPageAuthRequired({
 });
 
 export default function CreatePost({ post }) {
-  return <NewPost post={post} />;
+  return (
+    <main className="py-10">
+      <NewPost post={post} />
+    </main>
+  );
 }

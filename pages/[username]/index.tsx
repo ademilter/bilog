@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import { deepCopy } from "lib/helper";
 import Layout from "components/Layout";
 import { selectPost } from "components/Post";
-import Button from "components/Button";
 import PostList from "components/PostList";
 import GlobalContext from "context/global";
 import Link from "next/link";
@@ -38,9 +37,13 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
+  const filterPublishedPost = user.posts.filter((post) => {
+    return post.published;
+  });
+
   return {
     props: {
-      profile: deepCopy(user),
+      profile: { ...deepCopy(user), posts: deepCopy(filterPublishedPost) },
     },
   };
 };
@@ -53,24 +56,27 @@ const Profile: React.FC<{ profile: any }> = ({ profile }) => {
 
   return (
     <Layout>
-      <header>
+      <header className="py-10 flex flex-col items-center text-center border-b border-gray-200">
         <img className="w-40 rounded-full" src={picture} alt={name} />
-        <h1 className="text-2xl font-bold">{name}</h1>
-        <p className="text-sm">
-          Joined {DateTime.fromISO(createdAt).toFormat("DDD")} (
-          {DateTime.fromISO(createdAt).toRelative()})
+        <h1 className="text-4xl font-bold">{name}</h1>
+        <p title={DateTime.fromISO(createdAt).toRelative()}>
+          Joined {DateTime.fromISO(createdAt).toFormat("DDD")}
         </p>
 
         {isMe && (
           <div className="mt-2">
             <Link href="/settings">
-              <a>Edit Profile</a>
+              <a className="inline-flex items-center bg-gray-200 px-2 rounded-md select-none h-8">
+                Edit Profile
+              </a>
             </Link>
           </div>
         )}
       </header>
 
-      <PostList data={posts!} />
+      <main>
+        <PostList data={posts!} hideAuthor />
+      </main>
     </Layout>
   );
 };

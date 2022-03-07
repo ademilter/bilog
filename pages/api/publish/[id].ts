@@ -31,7 +31,7 @@ async function publish(req: NextApiRequest, res: NextApiResponse) {
 
         const post = await prisma.post.update({
           where: { id: id as string },
-          data: { title, content, published: true },
+          data: { title, content, published: true, publishedAt: new Date() },
         });
 
         if (!post) {

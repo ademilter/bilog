@@ -39,9 +39,9 @@ type Props = {
 const Drafts: React.FC<Props> = ({ data }) => {
   return (
     <Layout>
-      <div>
+      <main className="py-10">
         <PostList data={data} />
-      </div>
+      </main>
     </Layout>
   );
 };

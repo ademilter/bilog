@@ -12,9 +12,7 @@ const Layout: React.FC<Props> = ({ children, header }) => (
   <>
     {header ? header : <Header />}
 
-    <Container>
-      <main className="py-10">{children}</main>
-    </Container>
+    <Container>{children}</Container>
 
     {/*<Footer />*/}
   </>

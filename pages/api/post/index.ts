@@ -22,10 +22,25 @@ async function createPost(req: NextApiRequest, res: NextApiResponse) {
       throw new Error("Title or content is required");
     }
 
-    const text = title ? title.substring(0, 8) : content.substring(0, 8);
+    const text = title ? title.substring(0, 128) : content.substring(0, 128);
 
     const id = nanoid();
-    const postSlug = slugify(`${text}-${id}`);
+    const postSlug = slugify(`${text}-${id}`, {
+      customReplacements: [
+        ["ü", "u"],
+        ["Ü", "u"],
+        ["ı", "i"],
+        ["I", "i"],
+        ["ö", "o"],
+        ["Ö", "o"],
+        ["ç", "c"],
+        ["Ç", "c"],
+        ["ş", "s"],
+        ["Ş", "s"],
+        ["ğ", "g"],
+        ["Ğ", "g"],
+      ],
+    });
     const slug = `/${user.nickname}/${postSlug}`;
 
     const post = await prisma.post.create({

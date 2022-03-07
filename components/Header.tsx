@@ -17,7 +17,10 @@ const Header: React.FC = () => {
       <header className="bg-gray-100 py-4">
         <Container>
           <div className="flex items-center justify-between">
-            <nav className="flex items-center space-x-2">
+            <nav className="flex items-center space-x-4">
+              <Link href="/">
+                <a>Home</a>
+              </Link>
               <a href="/api/auth/login">Login</a>
             </nav>
           </div>

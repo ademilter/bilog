@@ -21,8 +21,10 @@ type Props = {
 const Settings: React.FC<Props> = ({ session }) => {
   return (
     <Layout>
-      <div>profile</div>
-      <div>{JSON.stringify(session)}</div>
+      <main className="py-10">
+        <div>profile</div>
+        <div>{JSON.stringify(session)}</div>
+      </main>
     </Layout>
   );
 };

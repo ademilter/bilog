@@ -31,5 +31,9 @@ export const getServerSideProps = withPageAuthRequired({
 });
 
 export default function EditPost({ post }) {
-  return <NewPost post={post} />;
+  return (
+    <main className="py-10">
+      <NewPost post={post} />
+    </main>
+  );
 }

@@ -6,13 +6,11 @@ import { PostProps, selectPost } from "components/Post";
 import Layout from "components/Layout";
 import PostList from "components/PostList";
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const data = await prisma.post.findMany({
     where: {
       published: true,
     },
-    // skip: 0,
-    // take: 5,
     orderBy: {
       createdAt: "desc",
     },
@@ -33,9 +31,9 @@ type Props = {
 const Index: React.FC<Props> = ({ data }) => {
   return (
     <Layout>
-      <div>
+      <main className="py-10">
         <PostList data={data} />
-      </div>
+      </main>
     </Layout>
   );
 };

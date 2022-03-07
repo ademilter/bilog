@@ -2,6 +2,7 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
 import Link from "next/link";
+import { DateTime } from "luxon";
 import GlobalContext from "context/global";
 import { markdownToHtml } from "lib/editor";
 import prisma from "lib/prisma";
@@ -31,6 +32,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
+  console.log(post);
+
   return {
     props: { post: deepCopy(post) },
   };
@@ -59,7 +62,7 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
 
   return (
     <Layout>
-      <div className="mt-4 space-x-2">
+      <div className="mt-4 flex items-center space-x-2">
         {isItMine && (
           <>
             {published ? (
@@ -71,6 +74,7 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
               </Button>
             ) : (
               <>
+                <div>Draft</div>
                 <Button
                   className="!bg-blue-100 text-blue-700"
                   onClick={() => publishPost(id)}
@@ -95,21 +99,32 @@ const Post: React.FC<{ post: PostProps }> = ({ post }) => {
         )}
       </div>
 
-      <div className="mt-10 prose prose-zinc max-w-none">
-        {!published && <div>(Draft)</div>}
-
-        <div className="mb-4">
-          <Link href={`/${user.username}`}>
-            <a>{user.name}</a>
-          </Link>
+      <main className="py-10">
+        <div>
+          <div className="mb-6 flex items-center gap-4">
+            <img
+              className="w-10 rounded-full"
+              src={user.picture}
+              alt={user.name}
+            />
+            <div>
+              <Link href={`/${user.username}`}>
+                <a className="font-medium">{user.name}</a>
+              </Link>
+              <div className="text-sm text-gray-500">
+                {DateTime.fromISO(post.publishedAt).toFormat("DDD")}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="text-5xl leading-none font-bold">{title}</div>
-
-        <div
-          dangerouslySetInnerHTML={{ __html: markdownToHtml(content || "") }}
-        />
-      </div>
+        <div className="prose prose-zinc max-w-none">
+          <div className="text-5xl leading-none font-bold">{title}</div>
+          <div
+            dangerouslySetInnerHTML={{ __html: markdownToHtml(content || "") }}
+          />
+        </div>
+      </main>
     </Layout>
   );
 };
