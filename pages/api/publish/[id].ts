@@ -1,6 +1,7 @@
 import prisma from "lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import generateSlug from "../../../lib/generateSlug";
 
 async function publish(req: NextApiRequest, res: NextApiResponse) {
   const { user } = getSession(req, res);
@@ -25,20 +26,32 @@ async function publish(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (method) {
       case "PUT":
-        if (!title && !content) {
-          throw new Error("title, content are required");
+        if (!title || !content) {
+          throw new Error("title and content are required");
         }
+
+        const slug = generateSlug(
+          id as string,
+          user.nickname,
+          title.substring(0, 128)
+        );
 
         const post = await prisma.post.update({
           where: { id: id as string },
-          data: { title, content, published: true, publishedAt: new Date() },
+          data: {
+            title,
+            content,
+            slug,
+            published: true,
+            publishedAt: new Date(),
+          },
         });
 
         if (!post) {
           throw new Error("Post not found");
         }
 
-        res.status(200).json({ message: "Post published" });
+        res.status(200).json(post);
         break;
       default:
         res.setHeader("Allow", ["PUT"]);

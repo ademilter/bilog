@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import prisma from "lib/prisma";
-import slugify from "@sindresorhus/slugify";
-import { customAlphabet } from "nanoid";
-
-const nanoid = customAlphabet("1234567890abcdefghijklmnoprstuvyzqw", 10);
+import generateSlug from "lib/generateSlug";
+import generatePostId from "../../../lib/generatePostId";
 
 // POST /api/post
 
@@ -23,25 +21,8 @@ async function createPost(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const text = title ? title.substring(0, 128) : content.substring(0, 128);
-
-    const id = nanoid();
-    const postSlug = slugify(`${text}-${id}`, {
-      customReplacements: [
-        ["ü", "u"],
-        ["Ü", "u"],
-        ["ı", "i"],
-        ["I", "i"],
-        ["ö", "o"],
-        ["Ö", "o"],
-        ["ç", "c"],
-        ["Ç", "c"],
-        ["ş", "s"],
-        ["Ş", "s"],
-        ["ğ", "g"],
-        ["Ğ", "g"],
-      ],
-    });
-    const slug = `/${user.nickname}/${postSlug}`;
+    const id = generatePostId();
+    const slug = generateSlug(id, user.nickname, text);
 
     const post = await prisma.post.create({
       data: {

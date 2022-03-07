@@ -55,26 +55,30 @@ const NewPost: React.FC<{ post: PostProps }> = ({ post: savedPost }) => {
       if (!responsePost.ok) throw new Error(responsePost.data.message);
       await router.push(`draft/${data.id}`);
     } catch (error) {
+      alert(error.message);
       console.error(error.message);
     }
   };
 
   const onUpdate = async () => {
     try {
-      await updatePost(postId, post);
+      const data = await updatePost(postId, post);
+      console.log(data);
       if (!responsePost.ok) throw new Error(responsePost.data.message);
-      return router.push(savedPost.slug);
+      return router.push(data.slug);
     } catch (error) {
+      alert(error.message);
       console.error(error.message);
     }
   };
 
   const onPublish = async () => {
     try {
-      await publishPost(postId, post);
+      const data = await publishPost(postId, post);
       if (!responsePublish.ok) throw new Error(responsePublish.data.message);
-      return router.push(savedPost.slug);
+      return router.push(data.slug);
     } catch (error) {
+      alert(error.message);
       console.error(error.message);
     }
   };

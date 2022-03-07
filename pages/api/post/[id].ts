@@ -1,6 +1,7 @@
 import prisma from "lib/prisma";
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
+import generateSlug from "../../../lib/generateSlug";
 
 // DELETE|PUT  api/post/:id
 async function post(req: NextApiRequest, res: NextApiResponse) {
@@ -30,16 +31,21 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
           throw new Error("title or content is required");
         }
 
+        const text = title
+          ? title.substring(0, 128)
+          : content.substring(0, 128);
+        const slug = generateSlug(id as string, user.nickname, text);
+
         const updatePost = await prisma.post.update({
           where: { id: id as string },
-          data: { title, content },
+          data: { title, content, slug },
         });
 
         if (!updatePost) {
           throw new Error("Post not found");
         }
 
-        res.status(200).json({ message: "Post updated" });
+        res.status(200).json(updatePost);
         break;
 
       case "DELETE":
